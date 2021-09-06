@@ -81,10 +81,10 @@ params:
   tiles:
     enable: yes
     showcase:
-      - image: pic01.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Aliquam
-        url: blogs/aliquam
+      - image: sep.jpg
+        subtitle: TNT
+        title: Ziyue
+        url: blogs/ziyuechen
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
         title: Tempus
