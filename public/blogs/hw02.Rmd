@@ -1,0 +1,96 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T22:26:09-05:00"
+description: Lorem Etiam Nullam
+draft: false
+image: pic09.jpg
+keywords: ""
+slug: magna
+title: HomeworkGroup09
+---
+
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest) # to scrape wikipedia page
+```
+
+
+
+# Where Do People Drink The Most Beer, Wine And Spirits?
+
+```{r, load_alcohol_data}
+library(fivethirtyeight)
+data(drinks)
+
+```
+
+What are the variable types? Any missing values we should worry about? 
+
+```{r glimpse_skim_data}
+# Briefly view the dataset with glimpse() and check for missing values using skim(), same applies for use of these two
+# functions below
+glimpse(drinks)
+skim(drinks)
+
+```
+All variables are numbers (integer or double) apart from the country which is character and there are no missing values in the dataset.
+
+Make a plot that shows the top 25 beer consuming countries
+
+```{r beer_plot}
+
+drinks %>%
+  slice_max(order_by = beer_servings, n=25) %>% 
+  ggplot(aes(y=reorder(country,beer_servings),x=beer_servings)) +
+  geom_col() +
+  labs(title = 'Top 25 Beer Consuming Countries', y = 'country') +
+  NULL
+
+```
+
+Make a plot that shows the top 25 wine consuming countries
+
+```{r wine_plot}
+
+drinks %>%
+  slice_max(order_by = wine_servings, n=25) %>% 
+  ggplot(aes(y=reorder(country,wine_servings),x=wine_servings)) +
+  geom_col() +
+  labs(title = 'Top 25 Wine Consuming Countries', y = 'country') +
+  NULL
+
+```
+
+Finally, make a plot that shows the top 25 spirit consuming countries
+```{r spirit_plot}
+
+drinks %>%
+  slice_max(order_by = spirit_servings, n=25) %>%
+  ggplot(aes(y=reorder(country,spirit_servings),x=spirit_servings)) +
+  geom_col() +
+  labs(title = 'Top 25 Spirit Consuming Countries', y = 'country') +
+  NULL
+
+```
+
+What can you infer from these plots? Don't just explain what's in the graph, but speculate or tell a short story (1-2 paragraphs max).
+
+Across all three types of drinks, beer was consumed the most by the top 25 countries compared to spirits and wine. This can be potentially due to the difference in alcohol level in the drinks and price: wine is the most expensive so people drink less even for those who like it a lot, and people are biologically capable of drinking more beer than spirits in general. Another interesting point to note is that the highest consumption for spirit peaks at over 400 servings in Grenada, whereas this number is only around 350 for both wine and beer. Furthermore, the choice of drinks seems to be highly correlated with geography of the countries: most wine lovers are located in Europe, countries that drink beer a lot are mostly situated in Africa, whereas spirit is the favourite for the Caribbean countries. Both weather conditions and cultural traditions can be contributing to these behaviours. Last but not least, we find that most countries are only ranked high in only one, if not none, of the three rankings: likely because that people can only drink so much alcohol everyday.
+
+
+
+
+

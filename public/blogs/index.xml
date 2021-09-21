@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lifestyle on Portfolio website for Ziyue Chen</title>
+    <link>https://ziyuechen2021.netlify.app/blogs/</link>
+    <description>Recent content in Lifestyle on Portfolio website for Ziyue Chen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="https://ziyuechen2021.netlify.app/blogs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Aliquam</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</link>
+      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</guid>
+      <description>Note that the echo = FALSE parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Task 2: gapminder country comparisonYou have seen the gapminder dataset that has data on life expectancy, population, and GDP per capita for 142 countries from 1952 to 2007. To get a glimpse of the dataframe, namely to see the variable names, variable types, etc.</description>
+    </item>
+    
+    <item>
+      <title>Ziyuechen</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</link>
+      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</guid>
+      <description>The goal is to test your software installation, to demonstrate competency in Markdown, and in the basics of ggplot.
+Task 1: Short biography written using markdownYou should write within this Rmd file a brief biography of yourself using markdown syntax. I know you have already achieved a lot, but a couple of paragraphs is more than enough.
+To achieve full marks, you should include at least 4 of the following elements:</description>
+    </item>
+    
+    <item>
+      <title>Ziyuechen</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</link>
+      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/ziyuechen/</guid>
+      <description>The goal is to test your software installation, to demonstrate competency in Markdown, and in the basics of ggplot.
+Task 1: Short biography written using markdownYou should write within this Rmd file a brief biography of yourself using markdown syntax. I know you have already achieved a lot, but a couple of paragraphs is more than enough.
+To achieve full marks, you should include at least 4 of the following elements:</description>
+    </item>
+    
+    <item>
+      <title>HomeworkGroup09</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/magna/</link>
+      <pubDate>Tue, 31 Oct 2017 22:26:09 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/magna/</guid>
+      <description>Where Do People Drink The Most Beer, Wine And Spirits?library(fivethirtyeight)data(drinks)What are the variable types? Any missing values we should worry about?
+# Briefly view the dataset with glimpse() and check for missing values using skim(), same applies for use of these two# functions belowglimpse(drinks)## Rows: 193## Columns: 5## $ country &amp;lt;chr&amp;gt; &amp;quot;Afghanistan&amp;quot;, &amp;quot;Albania&amp;quot;, &amp;quot;Algeria&amp;quot;, &amp;quot;And~## $ beer_servings &amp;lt;int&amp;gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, 2~## $ spirit_servings &amp;lt;int&amp;gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75,~## $ wine_servings &amp;lt;int&amp;gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 191~## $ total_litres_of_pure_alcohol &amp;lt;dbl&amp;gt; 0.</description>
+    </item>
+    
+    <item>
+      <title>Analysis of movies- IMDB dataset</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/ipsum/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/ipsum/</guid>
+      <description>Analysis of movies- IMDB datasetWe will look at a subset sample of movies, taken from the Kaggle IMDB 5000 movie dataset
+movies &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;, &amp;quot;movies.csv&amp;quot;))glimpse(movies)## Rows: 2,961## Columns: 11## $ title &amp;lt;chr&amp;gt; &amp;quot;Avatar&amp;quot;, &amp;quot;Titanic&amp;quot;, &amp;quot;Jurassic World&amp;quot;, &amp;quot;The Avenge~## $ genre &amp;lt;chr&amp;gt; &amp;quot;Action&amp;quot;, &amp;quot;Drama&amp;quot;, &amp;quot;Action&amp;quot;, &amp;quot;Action&amp;quot;, &amp;quot;Action&amp;quot;, &amp;quot;~## $ director &amp;lt;chr&amp;gt; &amp;quot;James Cameron&amp;quot;, &amp;quot;James Cameron&amp;quot;, &amp;quot;Colin Trevorrow~## $ year &amp;lt;dbl&amp;gt; 2009, 1997, 2015, 2012, 2008, 1999, 1977, 2015, 20~## $ duration &amp;lt;dbl&amp;gt; 178, 194, 124, 173, 152, 136, 125, 141, 164, 93, 1~## $ gross &amp;lt;dbl&amp;gt; 760505847, 658672302, 652177271, 623279547, 533316~## $ budget &amp;lt;dbl&amp;gt; 2.</description>
+    </item>
+    
+    <item>
+      <title>AnimalRescueIncidentsAttendedByTheLondonFireBrigade</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/bythelondonfirebrigade/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/bythelondonfirebrigade/</guid>
+      <description>Task 4: Animal rescue incidents attended by the London Fire BrigadeThe London Fire Brigade attends a range of non-fire incidents (which we call ‘special services’). These ‘special services’ include assistance to animals that may be trapped or in distress. The data is provided from January 2009 and is updated monthly. A range of information is supplied for each incident including some location information (postcode, borough, ward), as well as the data/time of the incidents.</description>
+    </item>
+    
+    <item>
+      <title>Opinionpolls</title>
+      <link>https://ziyuechen2021.netlify.app/blogs/opinionpolls/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>https://ziyuechen2021.netlify.app/blogs/opinionpolls/</guid>
+      <description>Task 3: Brexit vote analysisWe will have a look at the results of the 2016 Brexit vote in the UK. First we read the data using read_csv() and have a quick glimpse at the data
+brexit_results &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;,&amp;quot;brexit_results.csv&amp;quot;))glimpse(brexit_results)## Rows: 632## Columns: 11## $ Seat &amp;lt;chr&amp;gt; &amp;quot;Aldershot&amp;quot;, &amp;quot;Aldridge-Brownhills&amp;quot;, &amp;quot;Altrincham and Sale W~## $ con_2015 &amp;lt;dbl&amp;gt; 50.592, 52.050, 52.994, 43.979, 60.788, 22.418, 52.454, 22~## $ lab_2015 &amp;lt;dbl&amp;gt; 18.</description>
+    </item>
+    
+  </channel>
+</rss>

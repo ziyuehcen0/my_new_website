@@ -1,0 +1,1409 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: ipsum
+title: Analysis of movies- IMDB dataset
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="analysis-of-movies--imdb-dataset" class="section level1">
+<h1>Analysis of movies- IMDB dataset</h1>
+<p>We will look at a subset sample of movies, taken from the <a href="https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset">Kaggle IMDB 5000 movie dataset</a></p>
+<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))
+glimpse(movies)</code></pre>
+<pre><code>## Rows: 2,961
+## Columns: 11
+## $ title               &lt;chr&gt; &quot;Avatar&quot;, &quot;Titanic&quot;, &quot;Jurassic World&quot;, &quot;The Avenge~
+## $ genre               &lt;chr&gt; &quot;Action&quot;, &quot;Drama&quot;, &quot;Action&quot;, &quot;Action&quot;, &quot;Action&quot;, &quot;~
+## $ director            &lt;chr&gt; &quot;James Cameron&quot;, &quot;James Cameron&quot;, &quot;Colin Trevorrow~
+## $ year                &lt;dbl&gt; 2009, 1997, 2015, 2012, 2008, 1999, 1977, 2015, 20~
+## $ duration            &lt;dbl&gt; 178, 194, 124, 173, 152, 136, 125, 141, 164, 93, 1~
+## $ gross               &lt;dbl&gt; 760505847, 658672302, 652177271, 623279547, 533316~
+## $ budget              &lt;dbl&gt; 2.37e+08, 2.00e+08, 1.50e+08, 2.20e+08, 1.85e+08, ~
+## $ cast_facebook_likes &lt;dbl&gt; 4834, 45223, 8458, 87697, 57802, 37723, 13485, 920~
+## $ votes               &lt;dbl&gt; 886204, 793059, 418214, 995415, 1676169, 534658, 9~
+## $ reviews             &lt;dbl&gt; 3777, 2843, 1934, 2425, 5312, 3917, 1752, 1752, 35~
+## $ rating              &lt;dbl&gt; 7.9, 7.7, 7.0, 8.1, 9.0, 6.5, 8.7, 7.5, 8.5, 7.2, ~</code></pre>
+<p>Besides the obvious variables of <code>title</code>, <code>genre</code>, <code>director</code>, <code>year</code>, and <code>duration</code>, the rest of the variables are as follows:</p>
+<ul>
+<li><code>gross</code> : The gross earnings in the US box office, not adjusted for inflation</li>
+<li><code>budget</code>: The movie’s budget</li>
+<li><code>cast_facebook_likes</code>: the number of facebook likes cast memebrs received</li>
+<li><code>votes</code>: the number of people who voted for (or rated) the movie in IMDB</li>
+<li><code>reviews</code>: the number of reviews for that movie</li>
+<li><code>rating</code>: IMDB average rating</li>
+</ul>
+<div id="use-your-data-import-inspection-and-cleaning-skills-to-answer-the-following" class="section level2">
+<h2>Use your data import, inspection, and cleaning skills to answer the following:</h2>
+<ul>
+<li>Are there any missing values (NAs)? Are all entries distinct or are there duplicate entries?</li>
+</ul>
+<pre class="r"><code>skim(movies)</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-1">Table 1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">movies</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">2961</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">11</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">title</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">83</td>
+<td align="right">0</td>
+<td align="right">2907</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">genre</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">17</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">director</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">32</td>
+<td align="right">0</td>
+<td align="right">1366</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="11%" />
+<col width="9%" />
+<col width="9%" />
+<col width="5%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">year</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2002.90</td>
+<td align="right">9.95</td>
+<td align="right">1920.0</td>
+<td align="right">1999.0</td>
+<td align="right">2004.0</td>
+<td align="right">2010.0</td>
+<td align="right">2016.0</td>
+<td align="left">▁▁▁▂▇</td>
+</tr>
+<tr class="even">
+<td align="left">duration</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">109.65</td>
+<td align="right">22.17</td>
+<td align="right">37.0</td>
+<td align="right">95.0</td>
+<td align="right">106.0</td>
+<td align="right">119.0</td>
+<td align="right">330.0</td>
+<td align="left">▃▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">gross</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">58090400.90</td>
+<td align="right">72469621.94</td>
+<td align="right">703.0</td>
+<td align="right">12276810.0</td>
+<td align="right">34703228.0</td>
+<td align="right">75590286.0</td>
+<td align="right">760505847.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">budget</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">40619384.06</td>
+<td align="right">43682007.78</td>
+<td align="right">218.0</td>
+<td align="right">11000000.0</td>
+<td align="right">26000000.0</td>
+<td align="right">55000000.0</td>
+<td align="right">300000000.0</td>
+<td align="left">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">cast_facebook_likes</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">12393.76</td>
+<td align="right">20530.11</td>
+<td align="right">0.0</td>
+<td align="right">2241.0</td>
+<td align="right">4604.0</td>
+<td align="right">16926.0</td>
+<td align="right">656730.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">votes</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">109307.49</td>
+<td align="right">158143.91</td>
+<td align="right">5.0</td>
+<td align="right">19918.0</td>
+<td align="right">55749.0</td>
+<td align="right">133348.0</td>
+<td align="right">1689764.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">reviews</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">503.31</td>
+<td align="right">493.74</td>
+<td align="right">2.0</td>
+<td align="right">199.0</td>
+<td align="right">364.0</td>
+<td align="right">631.0</td>
+<td align="right">5312.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">rating</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6.39</td>
+<td align="right">1.05</td>
+<td align="right">1.6</td>
+<td align="right">5.8</td>
+<td align="right">6.5</td>
+<td align="right">7.1</td>
+<td align="right">9.3</td>
+<td align="left">▁▁▆▇▁</td>
+</tr>
+</tbody>
+</table>
+<p>There are no missing values in the dataset.</p>
+<ul>
+<li>Produce a table with the count of movies by genre, ranked in descending order</li>
+</ul>
+<pre class="r"><code>movies %&gt;% 
+  group_by(genre) %&gt;% 
+  summarise(movie_count = n())</code></pre>
+<pre><code>## # A tibble: 17 x 2
+##    genre       movie_count
+##    &lt;chr&gt;             &lt;int&gt;
+##  1 Action              738
+##  2 Adventure           288
+##  3 Animation            35
+##  4 Biography           135
+##  5 Comedy              848
+##  6 Crime               202
+##  7 Documentary          25
+##  8 Drama               498
+##  9 Family                3
+## 10 Fantasy              28
+## 11 Horror              131
+## 12 Musical               2
+## 13 Mystery              16
+## 14 Romance               2
+## 15 Sci-Fi                7
+## 16 Thriller              1
+## 17 Western               2</code></pre>
+<ul>
+<li>Produce a table with the average gross earning and budget (<code>gross</code> and <code>budget</code>) by genre. Calculate a variable <code>return_on_budget</code> which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this <code>return_on_budget</code> in descending order</li>
+</ul>
+<pre class="r"><code>movies %&gt;% 
+  group_by(genre) %&gt;% 
+  summarise(mean_gross = mean(gross),
+            mean_budget = mean(budget)) %&gt;% 
+  mutate(return_on_budget = mean_gross / mean_budget) %&gt;% 
+  arrange(desc(return_on_budget))</code></pre>
+<pre><code>## # A tibble: 17 x 4
+##    genre       mean_gross mean_budget return_on_budget
+##    &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Musical      92084000     3189500          28.9    
+##  2 Family      149160478.   14833333.         10.1    
+##  3 Western      20821884     3465000           6.01   
+##  4 Documentary  17353973.    5887852.          2.95   
+##  5 Horror       37713738.   13504916.          2.79   
+##  6 Fantasy      42408841.   17582143.          2.41   
+##  7 Comedy       42630552.   24446319.          1.74   
+##  8 Mystery      67533021.   39218750           1.72   
+##  9 Animation    98433792.   61701429.          1.60   
+## 10 Biography    45201805.   28543696.          1.58   
+## 11 Adventure    95794257.   66290069.          1.45   
+## 12 Drama        37465371.   26242933.          1.43   
+## 13 Crime        37502397.   26596169.          1.41   
+## 14 Romance      31264848.   25107500           1.25   
+## 15 Action       86583860.   71354888.          1.21   
+## 16 Sci-Fi       29788371.   27607143.          1.08   
+## 17 Thriller         2468      300000           0.00823</code></pre>
+<ul>
+<li>Produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. Don’t just show the total gross amount, but also the mean, median, and standard deviation per director.</li>
+</ul>
+<pre class="r"><code>movies %&gt;% 
+  group_by(director) %&gt;% 
+  summarise(total_gross = sum(gross),
+            mean_gross = mean(gross),
+            median_gross = median(gross),
+            sd_gross = sd(gross)) %&gt;% 
+  slice_max(total_gross, n=15) %&gt;% 
+  arrange(desc(total_gross))</code></pre>
+<pre><code>## # A tibble: 15 x 5
+##    director          total_gross mean_gross median_gross   sd_gross
+##    &lt;chr&gt;                   &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Steven Spielberg   4014061704 174524422.   164435221  101421051.
+##  2 Michael Bay        2231242537 171634041.   138396624  127161579.
+##  3 Tim Burton         2071275480 129454718.    76519172  108726924.
+##  4 Sam Raimi          2014600898 201460090.   234903076  162126632.
+##  5 James Cameron      1909725910 318287652.   175562880. 309171337.
+##  6 Christopher Nolan  1813227576 226653447    196667606. 187224133.
+##  7 George Lucas       1741418480 348283696    380262555  146193880.
+##  8 Robert Zemeckis    1619309108 124562239.   100853835   91300279.
+##  9 Clint Eastwood     1378321100  72543216.    46700000   75487408.
+## 10 Francis Lawrence   1358501971 271700394.   281666058  135437020.
+## 11 Ron Howard         1335988092 111332341    101587923   81933761.
+## 12 Gore Verbinski     1329600995 189942999.   123207194  154473822.
+## 13 Andrew Adamson     1137446920 284361730    279680930. 120895765.
+## 14 Shawn Levy         1129750988 102704635.    85463309   65484773.
+## 15 Ridley Scott       1128857598  80632686.    47775715   68812285.</code></pre>
+<ul>
+<li>Finally, ratings. Produce a table that describes how ratings are distributed by genre. We don’t want just the mean, but also, min, max, median, SD and some kind of a histogram or density graph that visually shows how ratings are distributed.</li>
+</ul>
+<pre class="r"><code># Creating the variables
+movies %&gt;% 
+  group_by(genre) %&gt;% 
+  summarise(mean_rating = mean(rating),
+            min_rating = min(rating),
+            max_rating = max(rating),
+            median_rating = median(rating),
+            sd_rating = sd(rating)) %&gt;% 
+  arrange(desc(mean_rating))</code></pre>
+<pre><code>## # A tibble: 17 x 6
+##    genre       mean_rating min_rating max_rating median_rating sd_rating
+##    &lt;chr&gt;             &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Biography          7.11        4.5        8.9          7.2      0.760
+##  2 Crime              6.92        4.8        9.3          6.9      0.849
+##  3 Mystery            6.86        4.6        8.5          6.9      0.882
+##  4 Musical            6.75        6.3        7.2          6.75     0.636
+##  5 Drama              6.73        2.1        8.8          6.8      0.917
+##  6 Documentary        6.66        1.6        8.5          7.4      1.77 
+##  7 Sci-Fi             6.66        5          8.2          6.4      1.09 
+##  8 Animation          6.65        4.5        8            6.9      0.968
+##  9 Romance            6.65        6.2        7.1          6.65     0.636
+## 10 Adventure          6.51        2.3        8.6          6.6      1.09 
+## 11 Family             6.5         5.7        7.9          5.9      1.22 
+## 12 Action             6.23        2.1        9            6.3      1.03 
+## 13 Fantasy            6.15        4.3        7.9          6.45     0.959
+## 14 Comedy             6.11        1.9        8.8          6.2      1.02 
+## 15 Horror             5.83        3.6        8.5          5.9      1.01 
+## 16 Western            5.7         4.1        7.3          5.7      2.26 
+## 17 Thriller           4.8         4.8        4.8          4.8     NA</code></pre>
+<pre class="r"><code># Making the overall histogram
+ggplot(movies,aes(x=rating)) +
+  geom_histogram() +
+  labs(title = &#39;Overall Ratings Distribution&#39;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># Making histograms for each genre (free scale)
+ggplot(movies,aes(x=rating)) +
+  geom_histogram() +
+  facet_wrap(~genre,scales = &#39;free&#39;) +
+  labs(title = &#39;Ratings Distribution by Genre (free scale)&#39;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code># Making histograms for each genre (uniform scale)
+ggplot(movies,aes(x=rating)) +
+  geom_histogram() +
+  facet_wrap(~genre) +
+  labs(title = &#39;Ratings Distribution by Genre (uniform scale)&#39;) +
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+</div>
+<div id="use-ggplot-to-answer-the-following" class="section level2">
+<h2>Use <code>ggplot</code> to answer the following</h2>
+<ul>
+<li>Examine the relationship between <code>gross</code> and <code>cast_facebook_likes</code>. Produce a scatterplot and write one sentence discussing whether the number of facebook likes that the cast has received is likely to be a good predictor of how much money a movie will make at the box office. What variable are you going to map to the Y- and X- axes?</li>
+</ul>
+<pre class="r"><code># Plotting the scatter plot
+ggplot(movies,aes(x = cast_facebook_likes, y = gross)) +
+  geom_point() +
+  geom_smooth() +
+  labs(title = &#39;Cast_facebook_likes vs. Gross&#39;) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/gross_on_fblikes-1.png" width="672" />
+Cast_facebook_likes is used as the independent variable and placed on x-axis, whereas gross is to be predicted and placed on y-axis as dependent variables. We can see that the line of best fit suggests that there is a positive correlation between the two variables when the facebook likes are low. However, this relationship is very <strong>insignificant</strong> and it is inverted after facebook likes exceeds around 300,000, potentially due to presence of outliers with high facebook likes but low gross. Overall facebook likes is not a great predictor for gross.</p>
+<ul>
+<li>Examine the relationship between <code>gross</code> and <code>budget</code>. Produce a scatterplot and write one sentence discussing whether budget is likely to be a good predictor of how much money a movie will make at the box office.</li>
+</ul>
+<pre class="r"><code># Plotting the scatter plot
+ggplot(movies,aes(x = budget, y = gross)) +
+  geom_point() +
+  geom_smooth() +
+  labs(title = &#39;Budget vs. Gross&#39;) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/gross_on_budget-1.png" width="672" />
+We observe a <strong>relatively strong</strong> positive correlation between the budget and gross of movies. Budget is not the perfect predictor but can predict the gross to a degree.</p>
+<ul>
+<li>Examine the relationship between <code>gross</code> and <code>rating</code>. Produce a scatterplot, faceted by <code>genre</code> and discuss whether IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office. Is there anything strange in this dataset?</li>
+</ul>
+<pre class="r"><code># Plotting multiple scatter plots by genre
+ggplot(movies,aes(x = rating, y = gross)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~genre) +
+  labs(title = &#39;Ratings vs. Gross by Genre&#39;) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : span too small. fewer data values than degrees of freedom.</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : pseudoinverse used at 5.689</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : neighborhood radius 0.211</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : reciprocal condition number 0</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : There are other near singularities as well. 4.0441</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if
+## (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : span too small. fewer
+## data values than degrees of freedom.</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if
+## (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used at
+## 5.689</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if
+## (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
+## 0.211</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if
+## (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : reciprocal condition
+## number 0</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if
+## (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : There are other near
+## singularities as well. 4.0441</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : span too small. fewer data values than degrees of freedom.</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 6.2955</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : pseudoinverse used at 6.2955</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : neighborhood radius 0.0045</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : reciprocal condition number 1</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 7.2045</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : There are other near singularities as well. 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger
+
+## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger</code></pre>
+<pre><code>## Warning: Computation failed in `stat_smooth()`:
+## 外接函数调用时不能有NA/NaN/Inf(arg5)</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : span too small. fewer data values than degrees of freedom.</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 6.1955</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : pseudoinverse used at 6.1955</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : neighborhood radius 0.0045</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : reciprocal condition number 1</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 7.1045</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : There are other near singularities as well. 2.025e-005</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger
+
+## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger</code></pre>
+<pre><code>## Warning: Computation failed in `stat_smooth()`:
+## 外接函数调用时不能有NA/NaN/Inf(arg5)</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : span too small. fewer data values than degrees of freedom.</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 4.084</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 0.000256</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : pseudoinverse used at 4.084</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : neighborhood radius 0.016</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : reciprocal condition number 1</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : at 7.316</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : radius 0.000256</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : all data on boundary of neighborhood. make span bigger</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : There are other near singularities as well. 0.000256</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger
+
+## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
+## parametric, : zero-width neighborhood. make span bigger</code></pre>
+<pre><code>## Warning: Computation failed in `stat_smooth()`:
+## 外接函数调用时不能有NA/NaN/Inf(arg5)</code></pre>
+<pre><code>## Warning in max(ids, na.rm = TRUE): max里所有的参数都不存在；回覆-Inf</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/gross_on_rating-1.png" width="672" />
+We observe a decent level of positive correlation between rating and gross for most genres with sufficient data points. Thus, rating is a decent predictor to predict the gross of movies overall. However, there are quite a number of genres with insufficient data points and there is one strange thing: the documentary genre shows a negative relationship between rating and gross.</p>
+</div>
+</div>
+<div id="returns-of-financial-stocks" class="section level1">
+<h1>Returns of financial stocks</h1>
+<blockquote>
+<p>You may find useful the material on <a href="https://mam2022.netlify.app/reference/finance_data/">finance data sources</a>.</p>
+</blockquote>
+<p>We will use the <code>tidyquant</code> package to download historical data of stock prices, calculate returns, and examine the distribution of returns.</p>
+<p>We must first identify which stocks we want to download data for, and for this we must know their ticker symbol; Apple is known as AAPL, Microsoft as MSFT, McDonald’s as MCD, etc. The file <code>nyse.csv</code> contains 508 stocks listed on the NYSE, their ticker <code>symbol</code>, <code>name</code>, the IPO (Initial Public Offering) year, and the sector and industry the company is in.</p>
+<pre class="r"><code># Importing and viewing the dataset
+nyse &lt;- read_csv(here::here(&quot;data&quot;,&quot;nyse.csv&quot;))
+glimpse(nyse)</code></pre>
+<pre><code>## Rows: 508
+## Columns: 6
+## $ symbol        &lt;chr&gt; &quot;MMM&quot;, &quot;ABB&quot;, &quot;ABT&quot;, &quot;ABBV&quot;, &quot;ACN&quot;, &quot;AAP&quot;, &quot;AFL&quot;, &quot;A&quot;, &quot;~
+## $ name          &lt;chr&gt; &quot;3M Company&quot;, &quot;ABB Ltd&quot;, &quot;Abbott Laboratories&quot;, &quot;AbbVie ~
+## $ ipo_year      &lt;chr&gt; &quot;n/a&quot;, &quot;n/a&quot;, &quot;n/a&quot;, &quot;2012&quot;, &quot;2001&quot;, &quot;n/a&quot;, &quot;n/a&quot;, &quot;1999~
+## $ sector        &lt;chr&gt; &quot;Health Care&quot;, &quot;Consumer Durables&quot;, &quot;Health Care&quot;, &quot;Heal~
+## $ industry      &lt;chr&gt; &quot;Medical/Dental Instruments&quot;, &quot;Electrical Products&quot;, &quot;Ma~
+## $ summary_quote &lt;chr&gt; &quot;https://www.nasdaq.com/symbol/mmm&quot;, &quot;https://www.nasdaq~</code></pre>
+<pre class="r"><code>skim(nyse)</code></pre>
+<table>
+<caption>(#tab:load_nyse_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">nyse</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">508</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">6</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">symbol</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">508</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">name</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">505</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ipo_year</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">33</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sector</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">21</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">industry</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">62</td>
+<td align="right">0</td>
+<td align="right">103</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">summary_quote</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">31</td>
+<td align="right">34</td>
+<td align="right">0</td>
+<td align="right">508</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>Based on this dataset, create a table and a bar plot that shows the number of companies per sector, in descending order</p>
+<pre class="r"><code># Arranging the dataset
+per_sector &lt;- nyse %&gt;% 
+  group_by(sector) %&gt;% 
+  count() %&gt;% 
+  arrange(desc(n))
+
+# Plotting the column chart
+ggplot(per_sector,aes(x=n,y=reorder(sector,n))) +
+  geom_col() +
+  labs(title = &#39;Number of Companies by Sector&#39;, y = &#39;sector&#39;)</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/companies_per_sector-1.png" width="672" /></p>
+<pre class="r"><code>  NULL</code></pre>
+<pre><code>## NULL</code></pre>
+<p>Next, let’s choose some stocks and their ticker symbols and download some data. You <strong>MUST</strong> choose 6 different stocks from the ones listed below; You should, however, add <code>SPY</code> which is the SP500 ETF (Exchange Traded Fund).</p>
+<pre class="r"><code># Scraping the stock data
+
+myStocks &lt;- c(&quot;AAPL&quot;,&quot;JPM&quot;,&quot;DPZ&quot;,&quot;ANF&quot;,&quot;TSLA&quot;,&quot;XOM&quot;,&quot;SPY&quot; ) %&gt;%
+  tq_get(get  = &quot;stock.prices&quot;,
+         from = &quot;2011-01-01&quot;,
+         to   = &quot;2021-08-31&quot;) %&gt;%
+  group_by(symbol) 
+
+glimpse(myStocks) # examine the structure of the resulting data frame</code></pre>
+<pre><code>## Rows: 18,781
+## Columns: 8
+## Groups: symbol [7]
+## $ symbol   &lt;chr&gt; &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL&quot;, &quot;AAPL~
+## $ date     &lt;date&gt; 2011-01-03, 2011-01-04, 2011-01-05, 2011-01-06, 2011-01-07, ~
+## $ open     &lt;dbl&gt; 11.63000, 11.87286, 11.76964, 11.95429, 11.92821, 12.10107, 1~
+## $ high     &lt;dbl&gt; 11.79500, 11.87500, 11.94071, 11.97321, 12.01250, 12.25821, 1~
+## $ low      &lt;dbl&gt; 11.60143, 11.71964, 11.76786, 11.88929, 11.85357, 12.04179, 1~
+## $ close    &lt;dbl&gt; 11.77036, 11.83179, 11.92857, 11.91893, 12.00429, 12.23036, 1~
+## $ volume   &lt;dbl&gt; 445138400, 309080800, 255519600, 300428800, 311931200, 448560~
+## $ adjusted &lt;dbl&gt; 10.10622, 10.15897, 10.24207, 10.23379, 10.30708, 10.50119, 1~</code></pre>
+<p>Financial performance analysis depend on returns; If I buy a stock today for 100 and I sell it tomorrow for 101.75, my one-day return, assuming no transaction costs, is 1.75%. So given the adjusted closing prices, our first step is to calculate daily and monthly returns.</p>
+<pre class="r"><code># Calculating daily returns
+
+myStocks_returns_daily &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;daily&quot;, 
+               type       = &quot;log&quot;,
+               col_rename = &quot;daily_returns&quot;,
+               cols = c(nested.col))  
+
+# Calculating monthly  returns
+
+myStocks_returns_monthly &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;monthly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;monthly_returns&quot;,
+               cols = c(nested.col)) 
+
+# Calculating yearly returns
+
+myStocks_returns_annual &lt;- myStocks %&gt;%
+  group_by(symbol) %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;yearly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;yearly_returns&quot;,
+               cols = c(nested.col))</code></pre>
+<p>Create a table where you summarise monthly returns for each of the stocks and <code>SPY</code>; min, max, median, mean, SD.</p>
+<pre class="r"><code># Creating summary statistics
+
+myStocks_returns_monthly_summary &lt;- myStocks_returns_monthly %&gt;% 
+  group_by(symbol) %&gt;% 
+  summarise(min_return = min(monthly_returns),
+            max_return = max(monthly_returns),
+            median_return = median(monthly_returns),
+            mean_return = mean(monthly_returns),
+            SD_return = sd(monthly_returns)) %&gt;% 
+  arrange(mean_return)
+
+myStocks_returns_monthly_summary</code></pre>
+<pre><code>## # A tibble: 7 x 6
+##   symbol min_return max_return median_return mean_return SD_return
+##   &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1 XOM        -0.262      0.233       0.00165     0.00309    0.0657
+## 2 ANF        -0.421      0.507       0.00287     0.00922    0.145 
+## 3 SPY        -0.125      0.127       0.0174      0.0123     0.0381
+## 4 JPM        -0.229      0.202       0.0225      0.0152     0.0722
+## 5 AAPL       -0.181      0.217       0.0257      0.0245     0.0785
+## 6 DPZ        -0.188      0.342       0.0253      0.0314     0.0746
+## 7 TSLA       -0.224      0.811       0.0148      0.0523     0.176</code></pre>
+<p>Plot a density plot, using <code>geom_density()</code>, for each of the stocks</p>
+<pre class="r"><code># Plotting returns for each stock
+
+myStocks_returns_monthly %&gt;% 
+  ggplot(aes(x=monthly_returns)) +
+  geom_density() +
+  facet_wrap(~symbol) +
+  labs(title = &#39;Monthly Return Distribution of Stocks&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/density_monthly_returns-1.png" width="672" /></p>
+<p>What can you infer from this plot? Which stock is the riskiest? The least risky?</p>
+<blockquote>
+<p>TYPE YOUR ANSWER AFTER (AND OUTSIDE!) THIS BLOCKQUOTE.</p>
+</blockquote>
+<p>We can see that all plots peak at a monthly return around zero percent. The more risky the stock is, its peak around zero should be lower and it should have more extreme return values. Thus, the most risky stock is TSLA, and the least risky one is SPY, likely because it is a combination of multiple stocks within a portfolio. In this way, fluctuations for individual stocks will not affect SPY’s monthly return too much.</p>
+<p>Finally, make a plot that shows the expected monthly return (mean) of a stock on the Y axis and the risk (standard deviation) in the X-axis. Please use <code>ggrepel::geom_text_repel()</code> to label each stock</p>
+<pre class="r"><code># Plotting summary statistics for each stock
+
+ggplot(myStocks_returns_monthly_summary,aes(x=SD_return, y=mean_return, label=symbol)) +
+  geom_point() +
+  ggrepel::geom_text_repel() +
+  labs(title = &#39;Risk vs. Mean Monthly Return by Stock&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/risk_return_plot-1.png" width="672" /></p>
+<p>What can you infer from this plot? Are there any stocks which, while being riskier, do not have a higher expected return?</p>
+<p>In general, stocks with higher returns are accompanied with higher risks. ANF underperforms as it has a much higher risk (SD_return) than all the other stocks, yet has a lower average return than all the other stocks except XOM. By contrast, DPZ is a very attractive stock because it generates second highest return while carrying less volatility (risk). Although TSLA has the highest return, it also carries the highest risk and may only be suitable for those with strong risk-bearing capability.</p>
+</div>
+<div id="on-your-own-ibm-hr-analytics" class="section level1">
+<h1>On your own: IBM HR Analytics</h1>
+<p>For this task, you will analyse a data set on Human Resoruce Analytics. The <a href="https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset">IBM HR Analytics Employee Attrition &amp; Performance data set</a> is a fictional data set created by IBM data scientists. Among other things, the data set includes employees’ income, their distance from work, their position in the company, their level of education, etc. A full description can be found on the website.</p>
+<p>First let us load the data</p>
+<pre class="r"><code>hr_dataset &lt;- read_csv(here::here(&quot;data&quot;, &quot;datasets_1067_1925_WA_Fn-UseC_-HR-Employee-Attrition.csv&quot;))</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   .default = col_double(),
+##   Attrition = col_character(),
+##   BusinessTravel = col_character(),
+##   Department = col_character(),
+##   EducationField = col_character(),
+##   Gender = col_character(),
+##   JobRole = col_character(),
+##   MaritalStatus = col_character(),
+##   Over18 = col_character(),
+##   OverTime = col_character()
+## )
+## i Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code>glimpse(hr_dataset)</code></pre>
+<pre><code>## Rows: 1,470
+## Columns: 35
+## $ Age                      &lt;dbl&gt; 41, 49, 37, 33, 27, 32, 59, 30, 38, 36, 35, 2~
+## $ Attrition                &lt;chr&gt; &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;~
+## $ BusinessTravel           &lt;chr&gt; &quot;Travel_Rarely&quot;, &quot;Travel_Frequently&quot;, &quot;Travel~
+## $ DailyRate                &lt;dbl&gt; 1102, 279, 1373, 1392, 591, 1005, 1324, 1358,~
+## $ Department               &lt;chr&gt; &quot;Sales&quot;, &quot;Research &amp; Development&quot;, &quot;Research ~
+## $ DistanceFromHome         &lt;dbl&gt; 1, 8, 2, 3, 2, 2, 3, 24, 23, 27, 16, 15, 26, ~
+## $ Education                &lt;dbl&gt; 2, 1, 2, 4, 1, 2, 3, 1, 3, 3, 3, 2, 1, 2, 3, ~
+## $ EducationField           &lt;chr&gt; &quot;Life Sciences&quot;, &quot;Life Sciences&quot;, &quot;Other&quot;, &quot;L~
+## $ EmployeeCount            &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ~
+## $ EmployeeNumber           &lt;dbl&gt; 1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16,~
+## $ EnvironmentSatisfaction  &lt;dbl&gt; 2, 3, 4, 4, 1, 4, 3, 4, 4, 3, 1, 4, 1, 2, 3, ~
+## $ Gender                   &lt;chr&gt; &quot;Female&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Female&quot;, &quot;Male&quot;, &quot;~
+## $ HourlyRate               &lt;dbl&gt; 94, 61, 92, 56, 40, 79, 81, 67, 44, 94, 84, 4~
+## $ JobInvolvement           &lt;dbl&gt; 3, 2, 2, 3, 3, 3, 4, 3, 2, 3, 4, 2, 3, 3, 2, ~
+## $ JobLevel                 &lt;dbl&gt; 2, 2, 1, 1, 1, 1, 1, 1, 3, 2, 1, 2, 1, 1, 1, ~
+## $ JobRole                  &lt;chr&gt; &quot;Sales Executive&quot;, &quot;Research Scientist&quot;, &quot;Lab~
+## $ JobSatisfaction          &lt;dbl&gt; 4, 2, 3, 3, 2, 4, 1, 3, 3, 3, 2, 3, 3, 4, 3, ~
+## $ MaritalStatus            &lt;chr&gt; &quot;Single&quot;, &quot;Married&quot;, &quot;Single&quot;, &quot;Married&quot;, &quot;Ma~
+## $ MonthlyIncome            &lt;dbl&gt; 5993, 5130, 2090, 2909, 3468, 3068, 2670, 269~
+## $ MonthlyRate              &lt;dbl&gt; 19479, 24907, 2396, 23159, 16632, 11864, 9964~
+## $ NumCompaniesWorked       &lt;dbl&gt; 8, 1, 6, 1, 9, 0, 4, 1, 0, 6, 0, 0, 1, 0, 5, ~
+## $ Over18                   &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, ~
+## $ OverTime                 &lt;chr&gt; &quot;Yes&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;,~
+## $ PercentSalaryHike        &lt;dbl&gt; 11, 23, 15, 11, 12, 13, 20, 22, 21, 13, 13, 1~
+## $ PerformanceRating        &lt;dbl&gt; 3, 4, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3, 3, ~
+## $ RelationshipSatisfaction &lt;dbl&gt; 1, 4, 2, 3, 4, 3, 1, 2, 2, 2, 3, 4, 4, 3, 2, ~
+## $ StandardHours            &lt;dbl&gt; 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 8~
+## $ StockOptionLevel         &lt;dbl&gt; 0, 1, 0, 0, 1, 0, 3, 1, 0, 2, 1, 0, 1, 1, 0, ~
+## $ TotalWorkingYears        &lt;dbl&gt; 8, 10, 7, 8, 6, 8, 12, 1, 10, 17, 6, 10, 5, 3~
+## $ TrainingTimesLastYear    &lt;dbl&gt; 0, 3, 3, 3, 3, 2, 3, 2, 2, 3, 5, 3, 1, 2, 4, ~
+## $ WorkLifeBalance          &lt;dbl&gt; 1, 3, 3, 3, 3, 2, 2, 3, 3, 2, 3, 3, 2, 3, 3, ~
+## $ YearsAtCompany           &lt;dbl&gt; 6, 10, 0, 8, 2, 7, 1, 1, 9, 7, 5, 9, 5, 2, 4,~
+## $ YearsInCurrentRole       &lt;dbl&gt; 4, 7, 0, 7, 2, 7, 0, 0, 7, 7, 4, 5, 2, 2, 2, ~
+## $ YearsSinceLastPromotion  &lt;dbl&gt; 0, 1, 0, 3, 2, 3, 0, 0, 1, 7, 0, 0, 4, 1, 0, ~
+## $ YearsWithCurrManager     &lt;dbl&gt; 5, 7, 0, 0, 2, 6, 0, 0, 8, 7, 3, 8, 3, 2, 3, ~</code></pre>
+<pre class="r"><code># Clean the dataset
+hr_cleaned &lt;- hr_dataset %&gt;% 
+  clean_names() %&gt;% 
+  mutate(
+    education = case_when(
+      education == 1 ~ &quot;Below College&quot;,
+      education == 2 ~ &quot;College&quot;,
+      education == 3 ~ &quot;Bachelor&quot;,
+      education == 4 ~ &quot;Master&quot;,
+      education == 5 ~ &quot;Doctor&quot;
+    ),
+    environment_satisfaction = case_when(
+      environment_satisfaction == 1 ~ &quot;Low&quot;,
+      environment_satisfaction == 2 ~ &quot;Medium&quot;,
+      environment_satisfaction == 3 ~ &quot;High&quot;,
+      environment_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    job_satisfaction = case_when(
+      job_satisfaction == 1 ~ &quot;Low&quot;,
+      job_satisfaction == 2 ~ &quot;Medium&quot;,
+      job_satisfaction == 3 ~ &quot;High&quot;,
+      job_satisfaction == 4 ~ &quot;Very High&quot;
+    ),
+    performance_rating = case_when(
+      performance_rating == 1 ~ &quot;Low&quot;,
+      performance_rating == 2 ~ &quot;Good&quot;,
+      performance_rating == 3 ~ &quot;Excellent&quot;,
+      performance_rating == 4 ~ &quot;Outstanding&quot;
+    ),
+    work_life_balance = case_when(
+      work_life_balance == 1 ~ &quot;Bad&quot;,
+      work_life_balance == 2 ~ &quot;Good&quot;,
+      work_life_balance == 3 ~ &quot;Better&quot;,
+      work_life_balance == 4 ~ &quot;Best&quot;
+    )
+  ) %&gt;% 
+  select(age, attrition, daily_rate, department,
+         distance_from_home, education,
+         gender, job_role,environment_satisfaction,
+         job_satisfaction, marital_status,
+         monthly_income, num_companies_worked, percent_salary_hike,
+         performance_rating, total_working_years,
+         work_life_balance, years_at_company,
+         years_since_last_promotion)</code></pre>
+<pre><code>## Warning in FUN(X[[i]], ...): strings not representable in native encoding will
+## be translated to UTF-8</code></pre>
+<p>Produce a one-page summary describing this dataset. Here is a non-exhaustive list of questions:</p>
+<pre class="r"><code>head(hr_cleaned)</code></pre>
+<pre><code>## # A tibble: 6 x 19
+##     age attrition daily_rate department      distance_from_ho~ education  gender
+##   &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                       &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt; 
+## 1    41 Yes             1102 Sales                           1 College    Female
+## 2    49 No               279 Research &amp; Dev~                 8 Below Col~ Male  
+## 3    37 Yes             1373 Research &amp; Dev~                 2 College    Male  
+## 4    33 No              1392 Research &amp; Dev~                 3 Master     Female
+## 5    27 No               591 Research &amp; Dev~                 2 Below Col~ Male  
+## 6    32 No              1005 Research &amp; Dev~                 2 College    Male  
+## # ... with 12 more variables: job_role &lt;chr&gt;, environment_satisfaction &lt;chr&gt;,
+## #   job_satisfaction &lt;chr&gt;, marital_status &lt;chr&gt;, monthly_income &lt;dbl&gt;,
+## #   num_companies_worked &lt;dbl&gt;, percent_salary_hike &lt;dbl&gt;,
+## #   performance_rating &lt;chr&gt;, total_working_years &lt;dbl&gt;,
+## #   work_life_balance &lt;chr&gt;, years_at_company &lt;dbl&gt;,
+## #   years_since_last_promotion &lt;dbl&gt;</code></pre>
+<ol style="list-style-type: decimal">
+<li>How often do people leave the company (<code>attrition</code>)</li>
+</ol>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  group_by(attrition) %&gt;% 
+  count()</code></pre>
+<pre><code>## # A tibble: 2 x 2
+## # Groups:   attrition [2]
+##   attrition     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 No         1233
+## 2 Yes         237</code></pre>
+<p>Out of the 1470 employees included in the dataset, 237 left, which makes up 19% of sample.</p>
+<ol style="list-style-type: decimal">
+<li>How are <code>age</code>, <code>years_at_company</code>, <code>monthly_income</code> and <code>years_since_last_promotion</code> distributed? can you roughly guess which of these variables is closer to Normal just by looking at summary statistics?</li>
+</ol>
+<pre class="r"><code># Distribution of age
+ggplot(hr_cleaned,aes(x = age)) +
+  geom_histogram() +
+  labs(title = &#39;age&#39;) + 
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># Distribution of years at company
+ggplot(hr_cleaned,aes(x = years_at_company)) +
+  geom_histogram() +
+  labs(title = &#39;years_at_company&#39;) + 
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<pre class="r"><code># Distribution of monthly income
+ggplot(hr_cleaned,aes(x = monthly_income)) +
+  geom_histogram() +
+  labs(title = &#39;monthly_income&#39;) + 
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-10-3.png" width="672" /></p>
+<pre class="r"><code># Distribution of years since last promotion
+ggplot(hr_cleaned,aes(x = years_since_last_promotion)) +
+  geom_histogram() +
+  labs(title = &#39;years_since_last_promotion&#39;) + 
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-10-4.png" width="672" />
+By roughly looking at the histograms, age has a distribution closest to normal distribution.</p>
+<ol style="list-style-type: decimal">
+<li>How are <code>job_satisfaction</code> and <code>work_life_balance</code> distributed? Don’t just report counts, but express categories as % of total</li>
+</ol>
+<pre class="r"><code># job satisfaction 
+hr_cleaned %&gt;% 
+  group_by(job_satisfaction) %&gt;% 
+  summarise(count = n()) %&gt;% 
+  mutate(ratio = count/sum(count))</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   job_satisfaction count ratio
+##   &lt;chr&gt;            &lt;int&gt; &lt;dbl&gt;
+## 1 High               442 0.301
+## 2 Low                289 0.197
+## 3 Medium             280 0.190
+## 4 Very High          459 0.312</code></pre>
+<pre class="r"><code># work life balance
+hr_cleaned %&gt;% 
+  group_by(work_life_balance) %&gt;% 
+  summarise(count = n()) %&gt;% 
+  mutate(ratio = count/sum(count))</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   work_life_balance count  ratio
+##   &lt;chr&gt;             &lt;int&gt;  &lt;dbl&gt;
+## 1 Bad                  80 0.0544
+## 2 Best                153 0.104 
+## 3 Better              893 0.607 
+## 4 Good                344 0.234</code></pre>
+<ol style="list-style-type: decimal">
+<li>Is there any relationship between monthly income and education? Monthly income and gender?</li>
+</ol>
+<pre class="r"><code># Box plots showing monthly income by education
+hr_cleaned %&gt;% 
+  ggplot(aes(x=reorder(education,monthly_income),y=monthly_income)) +
+  geom_boxplot() +
+  labs(title = &#39;Monthly Income by Education&#39;, x = &#39;education&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code># Box plots showing monthly income by gender
+hr_cleaned %&gt;% 
+  ggplot(aes(x=reorder(gender,monthly_income),y=monthly_income)) +
+  geom_boxplot() +
+  labs(title = &#39;Monthly Income by Gender&#39;, x = &#39;gender&#39;) + 
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-12-2.png" width="672" />
+From the box plots, we can see that there is a slight but not too consistent relationship between monthly income and education. Employees with higher education level tend to earn mean higher income, with the exception of mean income of bachelors being lower than college graduates. However, the level of education does not seem to affect the maximum income one can get as in each level there are some outliers with extremely high income. It is also worth noting that doctor has the larger interquartile range, showing the large difference in incomes even among doctors.</p>
+<p>On the other hand, the by gender box plots show that that mean income of females is slightly higher than males. This difference is larger in the upper quartile. Two genders’ maximum incomes are still similar. Overall, there may be a weak relationship between monthly income and gender.</p>
+<ol style="list-style-type: decimal">
+<li>Plot a boxplot of income vs job role. Make sure the highest-paid job roles appear first</li>
+</ol>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  ggplot(aes(x=reorder(job_role,desc(monthly_income)),y=monthly_income)) +
+  geom_boxplot() +
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) +
+  labs(title = &#39;Monthly Income by Job Role&#39;, x = &#39;job_role&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<ol style="list-style-type: decimal">
+<li>Calculate and plot a bar chart of the mean (or median?) income by education level.</li>
+</ol>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  group_by(education) %&gt;% 
+  summarise(mean_monthly_income = mean(monthly_income)) %&gt;% 
+  ggplot(aes(x=mean_monthly_income,y=reorder(education,mean_monthly_income))) +
+  geom_col() +
+  labs(title = &#39;Mean Monthly Income by Education Level&#39;, y = &#39;Education Level&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<ol style="list-style-type: decimal">
+<li>Plot the distribution of income by education level. Use a facet_wrap and a theme from <code>ggthemes</code></li>
+</ol>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  ggplot(aes(x = monthly_income)) +
+  geom_histogram() +
+  facet_wrap(~reorder(education,monthly_income)) +
+  ggthemes::theme_economist() +
+  labs(title = &#39;Distribution of Monthly Income by Education Level&#39;) +
+  NULL</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<ol style="list-style-type: decimal">
+<li>Plot income vs age, faceted by <code>job_role</code></li>
+</ol>
+<pre class="r"><code>hr_cleaned %&gt;% 
+  ggplot(aes(x = age, y = monthly_income)) +
+  geom_point() +
+  facet_wrap(~reorder(job_role,monthly_income)) +
+  labs(title = &#39;Income vs. Age by Job Role&#39;) +
+  NULL</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="challenge-2-opinion-polls-for-the-2021-german-elections" class="section level1">
+<h1>Challenge 2: Opinion polls for the 2021 German elections</h1>
+<p>The Guardian newspaper has an <a href="https://www.theguardian.com/world/2021/aug/20/german-election-poll-tracker-who-will-be-the-next-chancellor">election poll tracker for the upcoming German election</a>.
+The list of the opinion polls since Jan 2021 can be found at <a href="https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election">Wikipedia</a> and your task is to reproduce the graph similar to the one produced by the Guardian.</p>
+<p>The following code will scrape the wikipedia page and import the table in a dataframe.</p>
+<pre class="r"><code>url &lt;- &quot;https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election&quot;
+# https://www.economist.com/graphic-detail/who-will-succeed-angela-merkel
+# https://www.theguardian.com/world/2021/jun/21/german-election-poll-tracker-who-will-be-the-next-chancellor
+
+
+# get tables that exist on wikipedia page 
+tables &lt;- url %&gt;% 
+  read_html() %&gt;% 
+  html_nodes(css=&quot;table&quot;)
+
+
+# parse HTML tables into a dataframe called polls 
+# Use purr::map() to create a list of all tables in URL
+polls &lt;- map(tables, . %&gt;% 
+             html_table(fill=TRUE)%&gt;% 
+             janitor::clean_names())
+
+
+# list of opinion polls
+election_polls_germany &lt;- polls[[1]] %&gt;% # the first table on the page contains the list of all opinions polls
+  slice(2:(n()-1)) %&gt;%  # drop the first row, as it contains again the variable names and last row that contains 2017 results
+  mutate(
+         # polls are shown to run from-to, e.g. 9-13 Aug 2021. We keep the last date, 13 Aug here, as the poll date
+         # and we extract it by picking the last 11 characters from that field
+         end_date = str_sub(fieldwork_date, -11),
+         
+         # end_date is still a string, so we convert it into a date object using lubridate::dmy()
+         end_date = dmy(end_date),
+         
+         # we also get the month and week number from the date, if we want to do analysis by month- week, etc.
+         month = month(end_date),
+         week = isoweek(end_date)
+         )</code></pre>
+<pre class="r"><code>glimpse(polls)</code></pre>
+<pre><code>## List of 19
+##  $ : tibble [242 x 13] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:242] &quot;Polling firm&quot; &quot;INSA&quot; &quot;Forsa&quot; &quot;INSA&quot; ...
+##   ..$ fieldwork_date: chr [1:242] &quot;Fieldwork date&quot; &quot;17–20 Sep 2021&quot; &quot;14–20 Sep 2021&quot; &quot;13–17 Sep 2021&quot; ...
+##   ..$ samplesize    : chr [1:242] &quot;Samplesize&quot; &quot;2,054&quot; &quot;2,502&quot; &quot;1,502&quot; ...
+##   ..$ abs           : chr [1:242] &quot;Abs.&quot; &quot;–&quot; &quot;25&quot; &quot;–&quot; ...
+##   ..$ union         : num [1:242] NA 22 22 21 21 22 22 22 20 23 ...
+##   ..$ spd           : num [1:242] NA 25 25 26 27 25 27 26 27 25 ...
+##   ..$ af_d          : num [1:242] NA 11 11 11 11 11 11 11 11 10 ...
+##   ..$ fdp           : num [1:242] NA 12 11 12 10 11 12 11 12.5 12 ...
+##   ..$ linke         : num [1:242] NA 6.5 6 6 7 6 7 6 6.5 6 ...
+##   ..$ grune         : num [1:242] NA 15 17 15 18 16 15 15 15 17 ...
+##   ..$ fw            : chr [1:242] &quot;&quot; &quot;–&quot; &quot;3&quot; &quot;3&quot; ...
+##   ..$ others        : chr [1:242] &quot;Others&quot; &quot;8.5&quot; &quot;5&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:242] &quot;Lead&quot; &quot;3&quot; &quot;3&quot; &quot;5&quot; ...
+##  $ : tibble [226 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:226] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;INSA&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:226] &quot;Fieldwork date&quot; &quot;21–23 Dec 2020&quot; &quot;18–21 Dec 2020&quot; &quot;14–18 Dec 2020&quot; ...
+##   ..$ samplesize    : chr [1:226] &quot;Samplesize&quot; &quot;1,501&quot; &quot;2,055&quot; &quot;2,505&quot; ...
+##   ..$ abs           : chr [1:226] &quot;Abs.&quot; &quot;–&quot; &quot;–&quot; &quot;23&quot; ...
+##   ..$ union         : num [1:226] NA 36 35 37 35 36 37 37 36 37 ...
+##   ..$ spd           : num [1:226] NA 15 16 15 17 17 15 16.5 16 16 ...
+##   ..$ af_d          : num [1:226] NA 9 11 8 10 10 8 9 9 10 ...
+##   ..$ fdp           : num [1:226] NA 6 8 6 6 7 5 7 6 5 ...
+##   ..$ linke         : num [1:226] NA 9 7.5 8 8 7.5 8 7 7 8 ...
+##   ..$ grune         : num [1:226] NA 18 16.5 19 19 17 20 19 20 20 ...
+##   ..$ others        : chr [1:226] &quot;Others&quot; &quot;7&quot; &quot;6&quot; &quot;7&quot; ...
+##   ..$ lead          : chr [1:226] &quot;Lead&quot; &quot;18&quot; &quot;18.5&quot; &quot;18&quot; ...
+##  $ : tibble [234 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:234] &quot;Polling firm&quot; &quot;INSA&quot; &quot;Forsa&quot; &quot;Emnid&quot; ...
+##   ..$ fieldwork_date: chr [1:234] &quot;Fieldwork date&quot; &quot;20–23 Dec 2019&quot; &quot;16–20 Dec 2019&quot; &quot;12–18 Dec 2019&quot; ...
+##   ..$ samplesize    : chr [1:234] &quot;Samplesize&quot; &quot;2,034&quot; &quot;2,501&quot; &quot;1,899&quot; ...
+##   ..$ abs           : chr [1:234] &quot;Abs.&quot; &quot;–&quot; &quot;23&quot; &quot;–&quot; ...
+##   ..$ union         : num [1:234] NA 28 28 27 27 27 28 27 27 28 ...
+##   ..$ spd           : num [1:234] NA 13 13 15 13 13 12 13 14 16 ...
+##   ..$ af_d          : num [1:234] NA 15 13 14 15 15 13 14 15 13 ...
+##   ..$ fdp           : num [1:234] NA 10 8 9 7 8.5 8 8 8 9 ...
+##   ..$ linke         : num [1:234] NA 8 8 9 10 9.5 9 9 8 9 ...
+##   ..$ grune         : num [1:234] NA 21 22 20 21 21 22 23 21 20 ...
+##   ..$ others        : chr [1:234] &quot;Others&quot; &quot;5&quot; &quot;8&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:234] &quot;Lead&quot; &quot;7&quot; &quot;6&quot; &quot;7&quot; ...
+##  $ : tibble [253 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:253] &quot;Polling firm&quot; &quot;YouGov&quot; &quot;INSA&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:253] &quot;Fieldwork date&quot; &quot;21–27 Dec 2018&quot; &quot;20–21 Dec 2018&quot; &quot;17–21 Dec 2018&quot; ...
+##   ..$ samplesize    : chr [1:253] &quot;Samplesize&quot; &quot;1,665&quot; &quot;1,029&quot; &quot;2,504&quot; ...
+##   ..$ abs           : chr [1:253] &quot;Abs.&quot; &quot;–&quot; &quot;–&quot; &quot;24&quot; ...
+##   ..$ union         : num [1:253] NA 30 29 31 29 29 32 30 31 30 ...
+##   ..$ spd           : num [1:253] NA 16 14 14 15 15 15 15 15 15 ...
+##   ..$ af_d          : num [1:253] NA 14 15 13 14 15 12 15 13 14 ...
+##   ..$ fdp           : num [1:253] NA 8 9 8 9 9.5 8 7 8 8 ...
+##   ..$ linke         : num [1:253] NA 10 9 8 9 9.5 8 9 8 8 ...
+##   ..$ grune         : num [1:253] NA 18 19 20 19 18 19 19 20 20 ...
+##   ..$ others        : chr [1:253] &quot;Others&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:253] &quot;Lead&quot; &quot;12&quot; &quot;10&quot; &quot;11&quot; ...
+##  $ : tibble [68 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:68] &quot;Polling firm&quot; &quot;YouGov&quot; &quot;INSA&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:68] &quot;Fieldwork date&quot; &quot;25–27 Dec 2017&quot; &quot;21–22 Dec 2017&quot; &quot;18–22 Dec 2017&quot; ...
+##   ..$ samplesize    : chr [1:68] &quot;Samplesize&quot; &quot;1,489&quot; &quot;2,203&quot; &quot;2,504&quot; ...
+##   ..$ abs           : chr [1:68] &quot;Abs.&quot; &quot;–&quot; &quot;–&quot; &quot;21&quot; ...
+##   ..$ union         : num [1:68] NA 33 33 34 33 31 33 34 32 32 ...
+##   ..$ spd           : num [1:68] NA 21 20.5 19 21 21 20 21 20 22 ...
+##   ..$ af_d          : num [1:68] NA 13 13 12 12 14 12 11 13 13 ...
+##   ..$ fdp           : num [1:68] NA 9 10.5 8 8 9 8 10 9 8 ...
+##   ..$ linke         : num [1:68] NA 10 10 10 10 11 10 9 9 9 ...
+##   ..$ grune         : num [1:68] NA 10 9.5 12 11 10 12 11.5 12 11 ...
+##   ..$ others        : chr [1:68] &quot;Others&quot; &quot;4&quot; &quot;3.5&quot; &quot;5&quot; ...
+##   ..$ lead          : chr [1:68] &quot;Lead&quot; &quot;12&quot; &quot;12.5&quot; &quot;15&quot; ...
+##  $ : tibble [211 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:211] &quot;Polling firm&quot; &quot;INSA&quot; &quot;INSA&quot; &quot;INSA&quot; ...
+##   ..$ fieldwork_date: chr [1:211] &quot;Fieldwork date&quot; &quot;17–20 Sep 2021&quot; &quot;10–13 Sep 2021&quot; &quot;3–6 Sep 2021&quot; ...
+##   ..$ samplesize    : chr [1:211] &quot;Samplesize&quot; &quot;2,054&quot; &quot;2,062&quot; &quot;2,052&quot; ...
+##   ..$ cdu           : num [1:211] NA 17 16 15.5 15 18 20 20.5 22.5 22 ...
+##   ..$ spd           : num [1:211] NA 25 26 26 25 23 20 17.5 18 17.5 ...
+##   ..$ af_d          : num [1:211] NA 11 11.5 11 11 11 11 11.5 11 12 ...
+##   ..$ fdp           : num [1:211] NA 12 12.5 12.5 13.5 13 12.5 12.5 13 13 ...
+##   ..$ linke         : num [1:211] NA 6.5 6.5 6.5 7 7 6.5 6.5 7 6 ...
+##   ..$ grune         : num [1:211] NA 15 15 15.5 16.5 17 17.5 17.5 18 17.5 ...
+##   ..$ csu           : num [1:211] NA 5 4.5 5 5 5 5 5 5 5 ...
+##   ..$ others        : chr [1:211] &quot;Others&quot; &quot;8.5&quot; &quot;8&quot; &quot;8&quot; ...
+##   ..$ lead          : chr [1:211] &quot;Lead&quot; &quot;8&quot; &quot;10&quot; &quot;10.5&quot; ...
+##  $ : tibble [4 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:4] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;Forsa&quot; &quot;2017 federal election&quot;
+##   ..$ fieldwork_date: chr [1:4] &quot;Fieldwork date&quot; &quot;29 Jan – 1 Feb 2019&quot; &quot;8–22 Feb 2018&quot; &quot;24 Sep 2017&quot;
+##   ..$ samplesize    : chr [1:4] &quot;Samplesize&quot; &quot;1,007&quot; &quot;1,003&quot; &quot;–&quot;
+##   ..$ cdu           : num [1:4] NA 33 35 34.4
+##   ..$ spd           : num [1:4] NA 10 13 16.4
+##   ..$ grune         : num [1:4] NA 24 17 13.5
+##   ..$ fdp           : num [1:4] NA 10 11 12.7
+##   ..$ af_d          : num [1:4] NA 12 12 12.2
+##   ..$ linke         : num [1:4] NA 6 8 6.4
+##   ..$ others        : chr [1:4] &quot;Others&quot; &quot;5&quot; &quot;4&quot; &quot;4.5&quot;
+##   ..$ lead          : chr [1:4] &quot;Lead&quot; &quot;9&quot; &quot;18&quot; &quot;18.0&quot;
+##  $ : tibble [24 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:24] &quot;Polling firm&quot; &quot;GMS&quot; &quot;GMS&quot; &quot;Infratest dimap&quot; ...
+##   ..$ fieldwork_date: chr [1:24] &quot;Fieldwork date&quot; &quot;13–15 Sep 2021&quot; &quot;8–13 Sep 2021&quot; &quot;2–6 Sep 2021&quot; ...
+##   ..$ samplesize    : chr [1:24] &quot;Samplesize&quot; &quot;1,002&quot; &quot;1,005&quot; &quot;1,195&quot; ...
+##   ..$ csu           : num [1:24] NA 29 28 28 29 35 36 36 34 32 ...
+##   ..$ spd           : num [1:24] NA 17 18 18 15 9 11 9 10 8 ...
+##   ..$ af_d          : num [1:24] NA 11 11 10 10 9 9 10 9 10 ...
+##   ..$ fdp           : num [1:24] NA 13 12 12 13 12 9 11 11 11 ...
+##   ..$ grune         : num [1:24] NA 16 17 16 18 20 19 18 22 26 ...
+##   ..$ linke         : num [1:24] NA 5 4 3 3 4 4 4 3 4 ...
+##   ..$ free_voters   : chr [1:24] &quot;&quot; &quot;5&quot; &quot;6&quot; &quot;7&quot; ...
+##   ..$ others        : chr [1:24] &quot;Others&quot; &quot;4&quot; &quot;4&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:24] &quot;Lead&quot; &quot;12&quot; &quot;10&quot; &quot;10&quot; ...
+##  $ : tibble [30 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:30] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;Forsa&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:30] &quot;Fieldwork date&quot; &quot;29 Jan – 6 Feb 2020&quot; &quot;12–19 Dec 2019&quot; &quot;21–26 Nov 2019&quot; ...
+##   ..$ samplesize    : chr [1:30] &quot;Samplesize&quot; &quot;1,001&quot; &quot;1,005&quot; &quot;1,006&quot; ...
+##   ..$ cdu           : num [1:30] NA 21 21 20 22 22 22 22 21 19 ...
+##   ..$ linke         : num [1:30] NA 16 16 16 15 15 17 17 16 16 ...
+##   ..$ spd           : num [1:30] NA 12 13 14 13 13 14 14 14 14 ...
+##   ..$ grune         : num [1:30] NA 26 24 24 24 24 24 24 24 25 ...
+##   ..$ af_d          : num [1:30] NA 10 10 11 11 11 10 10 11 12 ...
+##   ..$ fdp           : num [1:30] NA 6 7 7 6 7 7 6 7 7 ...
+##   ..$ others        : chr [1:30] &quot;Others&quot; &quot;9&quot; &quot;9&quot; &quot;8&quot; ...
+##   ..$ lead          : chr [1:30] &quot;Lead&quot; &quot;5&quot; &quot;3&quot; &quot;4&quot; ...
+##  $ : tibble [6 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:6] &quot;Polling firm&quot; &quot;Infratest dimap&quot; &quot;Forsa&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:6] &quot;Fieldwork date&quot; &quot;25–28 Aug 2021&quot; &quot;10–15 Dec 2020&quot; &quot;17–20 Dec 2018&quot; ...
+##   ..$ samplesize    : chr [1:6] &quot;Samplesize&quot; &quot;1,157&quot; &quot;1,001&quot; &quot;1,005&quot; ...
+##   ..$ cdu           : num [1:6] NA 15 28 23 26 26.7
+##   ..$ af_d          : num [1:6] NA 18 17 20 20 20.2
+##   ..$ spd           : num [1:6] NA 29 15 12 16 17.6
+##   ..$ linke         : num [1:6] NA 11 12 18 19 17.2
+##   ..$ fdp           : num [1:6] NA 9 4 7 8 7.1
+##   ..$ grune         : num [1:6] NA 9 17 14 6 5
+##   ..$ others        : chr [1:6] &quot;Others&quot; &quot;9&quot; &quot;7&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:6] &quot;Lead&quot; &quot;11&quot; &quot;11&quot; &quot;3&quot; ...
+##  $ : tibble [8 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:8] &quot;Polling firm&quot; &quot;Trend Research&quot; &quot;Trend Research&quot; &quot;Trend Research&quot; ...
+##   ..$ fieldwork_date: chr [1:8] &quot;Fieldwork date&quot; &quot;13–16 Sep 2021&quot; &quot;30 Aug–2 Sep 2021&quot; &quot;12–18 Aug 2021&quot; ...
+##   ..$ samplesize    : chr [1:8] &quot;Samplesize&quot; &quot;703&quot; &quot;708&quot; &quot;702&quot; ...
+##   ..$ cdu           : num [1:8] NA 14 15 17 21 20 22 27.2
+##   ..$ spd           : num [1:8] NA 33 34 28 16 24 17 23.5
+##   ..$ grune         : num [1:8] NA 18 17 19 29 32 26 13.9
+##   ..$ linke         : num [1:8] NA 9 10 9 11 8 11 12.2
+##   ..$ fdp           : num [1:8] NA 14 13 14 8 10 10 10.8
+##   ..$ af_d          : num [1:8] NA 7 7 7 9 3 9 7.8
+##   ..$ others        : chr [1:8] &quot;Others&quot; &quot;5&quot; &quot;5&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:8] &quot;Lead&quot; &quot;15&quot; &quot;17&quot; &quot;9&quot; ...
+##  $ : tibble [3 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:3] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;2017 federal election&quot;
+##   ..$ fieldwork_date: chr [1:3] &quot;Fieldwork date&quot; &quot;8–22 Feb 2018&quot; &quot;24 Sep 2017&quot;
+##   ..$ samplesize    : chr [1:3] &quot;Samplesize&quot; &quot;1,035&quot; &quot;–&quot;
+##   ..$ cdu           : num [1:3] NA 31 30.9
+##   ..$ spd           : num [1:3] NA 19 23.5
+##   ..$ af_d          : num [1:3] NA 10 11.9
+##   ..$ fdp           : num [1:3] NA 12 11.5
+##   ..$ grune         : num [1:3] NA 14 9.7
+##   ..$ linke         : num [1:3] NA 10 8.1
+##   ..$ others        : chr [1:3] &quot;Others&quot; &quot;4&quot; &quot;4.4&quot;
+##   ..$ lead          : chr [1:3] &quot;Lead&quot; &quot;12&quot; &quot;7.3&quot;
+##  $ : tibble [16 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:16] &quot;Polling firm&quot; &quot;INSA&quot; &quot;Infratest dimap&quot; &quot;Infratest dimap&quot; ...
+##   ..$ fieldwork_date: chr [1:16] &quot;Fieldwork date&quot; &quot;10–16 Sep 2021&quot; &quot;2–7 Sep 2021&quot; &quot;19–24 Aug 2021&quot; ...
+##   ..$ samplesize    : chr [1:16] &quot;Samplesize&quot; &quot;1,000&quot; &quot;1,180&quot; &quot;1,153&quot; ...
+##   ..$ cdu           : num [1:16] NA 14 16 19 21 26 30 23 32 34 ...
+##   ..$ af_d          : num [1:16] NA 19 18 18 18 21 17 16 15 15 ...
+##   ..$ linke         : num [1:16] NA 11 11 12 12 13 13 12 16 12 ...
+##   ..$ spd           : num [1:16] NA 38 31 29 25 17 17 18 12 20 ...
+##   ..$ fdp           : num [1:16] NA 6 9 9 8 8 8 7 5 4 ...
+##   ..$ grune         : num [1:16] NA 9 8 7 10 11 8 16 13 10 ...
+##   ..$ others        : chr [1:16] &quot;Others&quot; &quot;3&quot; &quot;7&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:16] &quot;Lead&quot; &quot;19&quot; &quot;13&quot; &quot;10&quot; ...
+##  $ : tibble [5 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:5] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;Forsa&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:5] &quot;Fieldwork date&quot; &quot;19–28 May 2020&quot; &quot;1–8 Feb 2019&quot; &quot;8–22 Feb 2018&quot; ...
+##   ..$ samplesize    : chr [1:5] &quot;Samplesize&quot; &quot;1,002&quot; &quot;1,010&quot; &quot;1,004&quot; ...
+##   ..$ cdu           : num [1:5] NA 40 33 36 34.9
+##   ..$ spd           : num [1:5] NA 20 19 24 27.4
+##   ..$ fdp           : num [1:5] NA 5 8 9 9.3
+##   ..$ af_d          : num [1:5] NA 7 9 8 9.1
+##   ..$ grune         : num [1:5] NA 16 19 12 8.7
+##   ..$ linke         : num [1:5] NA 6 7 7 7
+##   ..$ others        : chr [1:5] &quot;Others&quot; &quot;6&quot; &quot;5&quot; &quot;4&quot; ...
+##   ..$ lead          : chr [1:5] &quot;Lead&quot; &quot;20&quot; &quot;14&quot; &quot;12&quot; ...
+##  $ : tibble [6 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:6] &quot;Polling firm&quot; &quot;Forsa&quot; &quot;Forsa&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:6] &quot;Fieldwork date&quot; &quot;10–17 May 2021&quot; &quot;Mar–Apr 2021&quot; &quot;1–16 Aug 2019&quot; ...
+##   ..$ samplesize    : chr [1:6] &quot;Samplesize&quot; &quot;1,058&quot; &quot;1,090&quot; &quot;1,505&quot; ...
+##   ..$ cdu           : num [1:6] NA 24 26 27 34 32.6
+##   ..$ spd           : num [1:6] NA 18 18 17 21 26
+##   ..$ fdp           : num [1:6] NA 11 11 10 11 13.1
+##   ..$ af_d          : num [1:6] NA 8 8 9 9 9.4
+##   ..$ grune         : num [1:6] NA 28 25 25 11 7.6
+##   ..$ linke         : num [1:6] NA 4 6 6 8 7.5
+##   ..$ others        : chr [1:6] &quot;Others&quot; &quot;7&quot; &quot;6&quot; &quot;6&quot; ...
+##   ..$ lead          : chr [1:6] &quot;Lead&quot; &quot;4&quot; &quot;1&quot; &quot;2&quot; ...
+##  $ : tibble [7 x 12] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:7] &quot;Polling firm&quot; &quot;Infratest dimap&quot; &quot;Infratest dimap&quot; &quot;Forsa&quot; ...
+##   ..$ fieldwork_date: chr [1:7] &quot;Fieldwork date&quot; &quot;2–7 Sep 2021&quot; &quot;9–13 Jul 2021&quot; &quot;1–8 Feb 2019&quot; ...
+##   ..$ samplesize    : chr [1:7] &quot;Samplesize&quot; &quot;1,160&quot; &quot;1,153&quot; &quot;1,005&quot; ...
+##   ..$ cdu           : num [1:7] NA 23 30 34 34 39 35.9
+##   ..$ spd           : num [1:7] NA 30 22 16 23 24 24.2
+##   ..$ af_d          : num [1:7] NA 10 11 10 12 9 11.2
+##   ..$ fdp           : num [1:7] NA 11 9 10 9 8 10.4
+##   ..$ grune         : num [1:7] NA 13 17 18 12 12 7.6
+##   ..$ linke         : num [1:7] NA 4 4 7 7 5 6.8
+##   ..$ free_voters   : chr [1:7] &quot;&quot; &quot;4&quot; &quot;3&quot; &quot;–&quot; ...
+##   ..$ others        : chr [1:7] &quot;Others&quot; &quot;5&quot; &quot;4&quot; &quot;5&quot; ...
+##   ..$ lead          : chr [1:7] &quot;Lead&quot; &quot;7&quot; &quot;8&quot; &quot;16&quot; ...
+##  $ : tibble [5 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:5] &quot;Polling firm&quot; &quot;INSA&quot; &quot;Infratest dimap&quot; &quot;INSA&quot; ...
+##   ..$ fieldwork_date: chr [1:5] &quot;Fieldwork date&quot; &quot;6–13 Sep 2021&quot; &quot;13–18 Aug 2021&quot; &quot;2–9 Aug 2021&quot; ...
+##   ..$ samplesize    : chr [1:5] &quot;Samplesize&quot; &quot;1,000&quot; &quot;1,179&quot; &quot;1,001&quot; ...
+##   ..$ af_d          : num [1:5] NA 26 23 25 27
+##   ..$ cdu           : num [1:5] NA 18 21 24 26.9
+##   ..$ linke         : num [1:5] NA 11 11 13 16.1
+##   ..$ spd           : num [1:5] NA 18 15 10 10.5
+##   ..$ fdp           : num [1:5] NA 11 12 11 8.2
+##   ..$ grune         : num [1:5] NA 8 10 10 4.6
+##   ..$ others        : chr [1:5] &quot;Others&quot; &quot;8&quot; &quot;8&quot; &quot;7&quot; ...
+##   ..$ lead          : chr [1:5] &quot;Lead&quot; &quot;8&quot; &quot;2&quot; &quot;1&quot; ...
+##  $ : tibble [3 x 11] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm  : chr [1:3] &quot;Polling firm&quot; &quot;INSA&quot; &quot;2017 federal election&quot;
+##   ..$ fieldwork_date: chr [1:3] &quot;Fieldwork date&quot; &quot;16–23 Aug 2021&quot; &quot;24 Sep 2017&quot;
+##   ..$ samplesize    : chr [1:3] &quot;Samplesize&quot; &quot;1,000&quot; &quot;–&quot;
+##   ..$ cdu           : num [1:3] NA 18 28.8
+##   ..$ af_d          : num [1:3] NA 22 22.7
+##   ..$ linke         : num [1:3] NA 18 16.9
+##   ..$ spd           : num [1:3] NA 21 13.2
+##   ..$ fdp           : num [1:3] NA 9 7.8
+##   ..$ grune         : num [1:3] NA 5 4.1
+##   ..$ others        : chr [1:3] &quot;Others&quot; &quot;7&quot; &quot;6.5&quot;
+##   ..$ lead          : chr [1:3] &quot;Lead&quot; &quot;1&quot; &quot;6.1&quot;
+##  $ : tibble [69 x 25] (S3: tbl_df/tbl/data.frame)
+##   ..$ polling_firm     : chr [1:69] &quot;Polling firm&quot; &quot;Forschungsgruppe Wahlen&quot; &quot;Forschungsgruppe Wahlen&quot; &quot;Forschungsgruppe Wahlen&quot; ...
+##   ..$ fieldwork_date   : chr [1:69] &quot;Fieldwork date&quot; &quot;14–16 Sep 2021&quot; &quot;7–9 Sep 2021&quot; &quot;31 Aug–2 Sep 2021&quot; ...
+##   ..$ samplesize       : chr [1:69] &quot;Samplesize&quot; &quot;1,406&quot; &quot;1,281&quot; &quot;1,301&quot; ...
+##   ..$ spd_union        : int [1:69] NA 9 9 12 10 12 13 13 11 6 ...
+##   ..$ spd_union_2      : int [1:69] NA 9 9 12 10 12 13 13 11 6 ...
+##   ..$ union_fdp        : chr [1:69] &quot;&quot; &quot;8&quot; &quot;7&quot; &quot;8&quot; ...
+##   ..$ union_fdp_2      : chr [1:69] &quot;&quot; &quot;8&quot; &quot;7&quot; &quot;8&quot; ...
+##   ..$ spd_grune        : chr [1:69] &quot;&quot; &quot;17&quot; &quot;17&quot; &quot;15&quot; ...
+##   ..$ spd_grune_2      : chr [1:69] &quot;&quot; &quot;17&quot; &quot;17&quot; &quot;15&quot; ...
+##   ..$ union_grune      : int [1:69] NA 5 4 5 7 9 13 13 14 12 ...
+##   ..$ union_grune_2    : int [1:69] NA 5 4 5 7 9 13 13 14 12 ...
+##   ..$ spd_grune_linke  : int [1:69] NA 9 10 7 7 6 6 6 7 16 ...
+##   ..$ spd_grune_linke_2: int [1:69] NA 9 10 7 7 6 6 6 7 16 ...
+##   ..$ spd_grune_linke_3: int [1:69] NA 9 10 7 7 6 6 6 7 16 ...
+##   ..$ union_grune_fdp  : int [1:69] NA 5 4 3 4 4 3 4 4 11 ...
+##   ..$ union_grune_fdp_2: int [1:69] NA 5 4 3 4 4 3 4 4 11 ...
+##   ..$ union_grune_fdp_3: int [1:69] NA 5 4 3 4 4 3 4 4 11 ...
+##   ..$ spd_union_fdp    : chr [1:69] &quot;&quot; &quot;5&quot; &quot;6&quot; &quot;4&quot; ...
+##   ..$ spd_union_fdp_2  : chr [1:69] &quot;&quot; &quot;5&quot; &quot;6&quot; &quot;4&quot; ...
+##   ..$ spd_union_fdp_3  : chr [1:69] &quot;&quot; &quot;5&quot; &quot;6&quot; &quot;4&quot; ...
+##   ..$ spd_grune_fdp    : chr [1:69] &quot;&quot; &quot;7&quot; &quot;6&quot; &quot;5&quot; ...
+##   ..$ spd_grune_fdp_2  : chr [1:69] &quot;&quot; &quot;7&quot; &quot;6&quot; &quot;5&quot; ...
+##   ..$ spd_grune_fdp_3  : chr [1:69] &quot;&quot; &quot;7&quot; &quot;6&quot; &quot;5&quot; ...
+##   ..$ spdfdp           : chr [1:69] &quot;&quot; &quot;–&quot; &quot;–&quot; &quot;–&quot; ...
+##   ..$ spdfdp_2         : chr [1:69] &quot;&quot; &quot;–&quot; &quot;–&quot; &quot;–&quot; ...</code></pre>
+<pre class="r"><code>election_polls_germany %&gt;% select(union,spd,af_d, fdp, linke, grune, end_date) %&gt;%
+  pivot_longer(.,cols= c(union,spd,af_d,fdp,linke,grune), 
+               names_to = &quot;Parties&quot;, values_to = &quot;val&quot;) %&gt;%
+  ggplot(aes(x= end_date, y= val, fill= Parties, 
+             colour= Parties))+
+  geom_point(alpha=0.3)+
+  geom_smooth(se=FALSE)+
+  scale_y_continuous(labels=function(x) paste0(x,&quot;%&quot;))+
+  scale_x_date(date_labels = &quot;%b %y&quot;)+
+  xlab(&quot;Date&quot;)+
+  ylab(&quot;Percentage Votes (Polls)&quot;)+
+  labs(title= &quot;Polls Data for Germany Election 2021&quot;)+
+  scale_color_manual(values=c(&quot;#0088FF&quot;, &quot;#FFFF99&quot;, &quot;#448844&quot;, &quot;#DD1199&quot;, 
+                              &quot;#FF5811&quot;, &quot;#001100&quot;))+ 
+  theme(plot.title=element_text(hjust=0.5))+
+  knitr::opts_chunk$set(fig.width=unit(10,&quot;cm&quot;), fig.height=unit(10,&quot;cm&quot;))</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/blogs/hw0202_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="deliverables" class="section level1">
+<h1>Deliverables</h1>
+<p>There is a lot of explanatory text, comments, etc. You do not need these, so delete them and produce a stand-alone document that you could share with someone. Knit the edited and completed R Markdown file as an HTML document (use the “Knit” button at the top of the script editor window) and upload it to Canvas.</p>
+</div>
+<div id="details" class="section level1">
+<h1>Details</h1>
+<ul>
+<li>Who did you collaborate with: Stephen Zhu, Aman Sharma, Rishabh Kaushik, Vera Meanti, Sarah Wu, Ziyue Chen</li>
+<li>Approximately how much time did you spend on this problem set: 5 hours</li>
+<li>What, if anything, gave you the most trouble:</li>
+</ul>
+<p><strong>Please seek out help when you need it,</strong> and remember the <a href="https://mam2022.netlify.app/syllabus/#the-15-minute-rule" target="_blank">15-minute rule</a>. You know enough R (and have enough examples of code from class and your readings) to be able to do this. If you get stuck, ask for help from others, post a question on Slack– and remember that I am here to help too!</p>
+<blockquote>
+<p>As a true test to yourself, do you understand the code you submitted and are you able to explain it to someone else?</p>
+</blockquote>
+</div>
+<div id="rubric" class="section level1">
+<h1>Rubric</h1>
+<p>Check minus (1/5): Displays minimal effort. Doesn’t complete all components. Code is poorly written and not documented. Uses the same type of plot for each graph, or doesn’t use plots appropriate for the variables being analyzed.</p>
+<p>Check (3/5): Solid effort. Hits all the elements. No clear mistakes. Easy to follow (both the code and the output).</p>
+<p>Check plus (5/5): Finished all components of the assignment correctly and addressed both challenges. Code is well-documented (both self-documented and with additional comments as necessary). Used tidyverse, instead of base R. Graphs and tables are properly labelled. Analysis is clear and easy to follow, either because graphs are labeled clearly or you’ve written additional text to describe how you interpret the output.</p>
+</div>
