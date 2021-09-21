@@ -36,11 +36,11 @@ To achieve full marks, you should include at least 4 of the following elements:
 -   Links
 -   Embedding images
 
-#Name:**Ziyue Chen**
+## Name:**Ziyue Chen**
 
-#Education: Bechelor Degree from Shanghai Jiao Tong University
+## Education: Bechelor Degree from Shanghai Jiao Tong University
 
-#Internship
+## Internship
 
 *CICC \n
 

@@ -8,8 +8,7 @@ params:
   banner:
     buttonText: Get Started
     subtitle: |-
-      A RESPONSIVE SITE TEMPLATE DESIGNED BY HTML5 UP
-      AND RELEASED UNDER THE CREATIVE COMMONS.
+      
     title: Hi, my name is Ziyue Chen
   blog: {}
   contact:
@@ -88,7 +87,7 @@ params:
       - image: pic02.jpg
         subtitle: HOMEWORKONE
         title: HOMEWORK01
-        url: blogs/ipsum
+        url: blogs/HOMEWORK
       - image: pic03.jpg
         subtitle: SessioneOne
         title: HOMEWORK
